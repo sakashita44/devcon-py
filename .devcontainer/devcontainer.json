@@ -1,0 +1,66 @@
+{
+    "name": "Your Project Name",
+    "dockerFile": "Dockerfile",
+    "context": ".",
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                // Python and Jupyter related
+                "ms-python.python",
+                "ms-python.vscode-pylance",
+                "ms-toolsai.jupyter",
+                // Version control and CI/CD
+                "iterative.dvc",
+                "github.vscode-github-actions",
+                // Docker and YAML
+                "ms-azuretools.vscode-docker",
+                "redhat.vscode-yaml",
+                // Markdown and documentation
+                "bierner.markdown-mermaid",
+                "yzane.markdown-pdf",
+                "DavidAnson.vscode-markdownlint",
+                "yzhang.markdown-all-in-one",
+                // Code quality and utilities
+                "streetsidesoftware.code-spell-checker",
+                "Gruntfuggly.todo-tree",
+                "oderwat.indent-rainbow",
+                // CSV editing
+                "janisdd.vscode-edit-csv",
+                "GitHub.copilot"
+            ],
+            "settings": {
+                "python.linting.enabled": true,
+                "python.linting.flake8Enabled": true,
+                "python.linting.pylintEnabled": false,
+                "python.formatting.provider": "black",
+                "python.analysis.extraPaths": [
+                    "/workspace/scripts/common",
+                    "/workspace/scripts/interface"
+                ],
+                "editor.formatOnSave": true,
+                "editor.rulers": [
+                    88
+                ],
+                "jupyter.notebookFileRoot": "/workspace",
+                "python.linting.flake8Args": [
+                    "--max-line-length=88",
+                    "--extend-ignore=E203"
+                ],
+                "terminal.integrated.defaultProfile.linux": "bash",
+                "python.defaultInterpreterPath": "/usr/local/bin/python"
+            }
+        }
+    },
+    "workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind",
+    "workspaceFolder": "/workspace",
+    "remoteUser": "pyuser",
+    "postCreateCommand": "sudo chmod +x .devcontainer/scripts/postCreateCommand.sh && sudo .devcontainer/scripts/postCreateCommand.sh ${containerUser}",
+    "runArgs": [
+        "--env-file",
+        ".devcontainer/.env"
+    ],
+    "mounts": [
+        "source=${localEnv:HOME}${localEnv:USERPROFILE}/.gitconfig,target=/tmp/.host-gitconfig,type=bind,consistency=cached,readonly",
+        "source=${localEnv:HOME}${localEnv:USERPROFILE}/.ssh,target=/tmp/.host-ssh,type=bind,consistency=cached,readonly"
+    ]
+}

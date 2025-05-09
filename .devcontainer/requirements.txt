@@ -1,0 +1,32 @@
+## 自身の必要なライブラリを適宜追加のこと
+
+# 基本的なデータ分析パッケージ
+numpy
+pandas
+matplotlib
+seaborn
+scipy
+scikit-learn
+bamboolib
+
+# データベース関連
+duckdb
+duckdb-engine
+sqlalchemy
+
+# Jupyter関連
+jupyter
+nbstripout
+nbformat
+nbconvert
+
+# 開発補助ツール
+dvc
+black
+flake8
+pytest
+
+# その他の便利なツール
+tqdm
+pyyaml
+python-dotenv

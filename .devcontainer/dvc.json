@@ -1,0 +1,8 @@
+{
+    "remote": {
+        "name": "myremote",
+        "url": "<your-remote-url>",
+        "_name": "dvcのリモート名 (dvc remote add -d myremote <your-remote-url>)",
+        "_url": "dvcのリモートURL (dvc remote add -d myremote <your-remote-url>)"
+    }
+}
