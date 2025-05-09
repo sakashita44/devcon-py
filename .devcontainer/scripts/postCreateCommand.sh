@@ -19,36 +19,49 @@ if [ -f "${SCRIPT_DIR}/copy_host_config.sh" ]; then
     # ここでは postCreateCommand.sh が既に root で動いているので、そのまま実行する.
     bash "${SCRIPT_DIR}/copy_host_config.sh" "$TARGET_USER"
     echo "[postCreateCommand] copy_host_config.sh finished."
+
+    # dvc_setup.sh の実行
+    echo "[postCreateCommand] Running dvc_setup.sh..."
+    if [ -f "${SCRIPT_DIR}/dvc_setup.sh" ]; then
+        sudo -u "$TARGET_USER" bash "${SCRIPT_DIR}/dvc_setup.sh"
+        echo "[postCreateCommand] dvc_setup.sh finished."
+    else
+        echo "[postCreateCommand] Warning: dvc_setup.sh not found at ${SCRIPT_DIR}/dvc_setup.sh."
+    fi
+
+    # nbstripout_setup.sh の実行
+    echo "[postCreateCommand] Running nbstripout_setup.sh..."
+    if [ -f "${SCRIPT_DIR}/nbstripout_setup.sh" ]; then
+        sudo -u "$TARGET_USER" bash "${SCRIPT_DIR}/nbstripout_setup.sh"
+        echo "[postCreateCommand] nbstripout_setup.sh finished."
+    else
+        echo "[postCreateCommand] Warning: nbstripout_setup.sh not found at ${SCRIPT_DIR}/nbstripout_setup.sh."
+    fi
 else
     echo "[postCreateCommand] Warning: copy_host_config.sh not found at ${SCRIPT_DIR}/copy_host_config.sh."
 fi
 
-# dvc_setup.sh の実行
-echo "[postCreateCommand] Running dvc_setup.sh..."
-if [ -f "${SCRIPT_DIR}/dvc_setup.sh" ]; then
-    bash "${SCRIPT_DIR}/dvc_setup.sh"
-    echo "[postCreateCommand] dvc_setup.sh finished."
-else
-    echo "[postCreateCommand] Warning: dvc_setup.sh not found at ${SCRIPT_DIR}/dvc_setup.sh."
-fi
-
-# nbstripout_setup.sh の実行
-echo "[postCreateCommand] Running nbstripout_setup.sh..."
-if [ -f "${SCRIPT_DIR}/nbstripout_setup.sh" ]; then # Typo fix: removed trailing '}'
-    bash "${SCRIPT_DIR}/nbstripout_setup.sh"
-    echo "[postCreateCommand] nbstripout_setup.sh finished."
-else
-    echo "[postCreateCommand] Warning: nbstripout_setup.sh not found at ${SCRIPT_DIR}/nbstripout_setup.sh."
-fi
-
 # 他のセットアップスクリプトがあればここに追加して呼び出す
-# 例:
-# echo "[postCreateCommand] Running another_setup.sh..."
-# if [ -f "${SCRIPT_DIR}/another_setup.sh" ]; then
-#     bash "${SCRIPT_DIR}/another_setup.sh"
-#     echo "[postCreateCommand] another_setup.sh finished."
+# 通常、ユーザー固有の設定やツールインストールは $TARGET_USER で実行する.
+# root権限が必要な場合は、`sudo -u "$TARGET_USER"` を付けずに直接 `bash your_script.sh` で実行する
+# (この postCreateCommand.sh 自体が root で実行されているため).
+#
+# 例: (ユーザーレベルで実行する場合)
+# echo "[postCreateCommand] Running another_user_setup.sh for user $TARGET_USER..."
+# if [ -f "${SCRIPT_DIR}/another_user_setup.sh" ]; then
+#     sudo -u "$TARGET_USER" bash "${SCRIPT_DIR}/another_user_setup.sh"
+#     echo "[postCreateCommand] another_user_setup.sh finished for user $TARGET_USER."
 # else
-#     echo "[postCreateCommand] Warning: another_setup.sh not found."
+#     echo "[postCreateCommand] Warning: another_user_setup.sh not found."
+# fi
+#
+# 例: (rootレベルで実行する場合)
+# echo "[postCreateCommand] Running another_root_setup.sh as root..."
+# if [ -f "${SCRIPT_DIR}/another_root_setup.sh" ]; then
+#     bash "${SCRIPT_DIR}/another_root_setup.sh"
+#     echo "[postCreateCommand] another_root_setup.sh finished as root."
+# else
+#     echo "[postCreateCommand] Warning: another_root_setup.sh not found."
 # fi
 
 echo "--- Container post-creation setup finished ---"

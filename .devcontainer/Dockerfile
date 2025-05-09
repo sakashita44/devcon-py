@@ -23,11 +23,6 @@ RUN groupadd --gid $USER_GID $USERNAME \
     && apt-get install -y sudo \
     && echo $USERNAME ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$USERNAME \
     && chmod 0440 /etc/sudoers.d/$USERNAME
-# ユーザーの切り替え
-USER $USERNAME
-
-# 作業ディレクトリの設定
-WORKDIR /workspace
 
 # 必要なパッケージのインストール
 ### 要件に応じてパッケージを変更
@@ -55,19 +50,21 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
+# ユーザーの切り替え
+USER $USERNAME
+
+# 作業ディレクトリの設定
+WORKDIR /workspace
+
 # bash-completionの設定
 RUN echo '\n# Enable bash-completion\nif [ -f /usr/share/bash-completion/bash_completion ]; then\n  . /usr/share/bash-completion/bash_completion\nelif [ -f /etc/bash_completion ]; then\n  . /etc/bash_completion\nfi' >> /home/$USERNAME/.bashrc
 
 # Python関連パッケージのインストール
 ### 要件に応じて.devcontainer/requirements.txtを変更
-COPY requirements.txt /tmp/requirements.txt
+COPY --chown=$USERNAME:$USERNAME requirements.txt /tmp/requirements.txt
 RUN pip install --no-cache-dir --upgrade pip setuptools wheel \
     && pip install --no-cache-dir -r /tmp/requirements.txt \
     && rm /tmp/requirements.txt
-
-# 作業ディレクトリ
-### コンテナ内の作業ディレクトリを指定 要件に応じて変更
-WORKDIR /workspace
 
 # コンテナ起動時のコマンド設定
 CMD ["/bin/bash"]
