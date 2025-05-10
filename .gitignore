@@ -1,3 +1,7 @@
+# DVC specific files
+/.dvc/cache
+/.dvc/tmp
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
