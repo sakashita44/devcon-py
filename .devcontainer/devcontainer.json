@@ -54,7 +54,7 @@
     "workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind",
     "workspaceFolder": "/workspace",
     "remoteUser": "pyuser",
-    "postCreateCommand": "sudo chmod +x .devcontainer/scripts/postCreateCommand.sh && sudo .devcontainer/scripts/postCreateCommand.sh ${containerUser}",
+    "postCreateCommand": "sudo chmod +x .devcontainer/scripts/postCreateCommand.sh && sudo .devcontainer/scripts/postCreateCommand.sh pyuser",
     "runArgs": [
         "--env-file",
         ".devcontainer/.env"

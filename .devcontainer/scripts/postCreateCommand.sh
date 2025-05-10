@@ -7,6 +7,12 @@ set -e # いずれかのコマンドがエラーになった場合, 直ちにス
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 TARGET_USER=$1 # 最初の引数としてコンテナユーザー名を受け取る
 
+# TARGET_USERが空の場合のフォールバック処理
+if [ -z "$TARGET_USER" ]; then
+    echo "[postCreateCommand] Warning: TARGET_USER argument was empty. Falling back to default user 'pyuser'."
+    TARGET_USER="pyuser"
+fi
+
 echo "--- Starting container post-creation setup for user: $TARGET_USER ---"
 
 # copy_host_config.sh の実行
@@ -23,7 +29,7 @@ if [ -f "${SCRIPT_DIR}/copy_host_config.sh" ]; then
     # dvc_setup.sh の実行
     echo "[postCreateCommand] Running dvc_setup.sh..."
     if [ -f "${SCRIPT_DIR}/dvc_setup.sh" ]; then
-        sudo -u "$TARGET_USER" bash "${SCRIPT_DIR}/dvc_setup.sh"
+        sudo -u "$TARGET_USER" bash -lc "bash ${SCRIPT_DIR}/dvc_setup.sh"
         echo "[postCreateCommand] dvc_setup.sh finished."
     else
         echo "[postCreateCommand] Warning: dvc_setup.sh not found at ${SCRIPT_DIR}/dvc_setup.sh."
@@ -32,7 +38,7 @@ if [ -f "${SCRIPT_DIR}/copy_host_config.sh" ]; then
     # nbstripout_setup.sh の実行
     echo "[postCreateCommand] Running nbstripout_setup.sh..."
     if [ -f "${SCRIPT_DIR}/nbstripout_setup.sh" ]; then
-        sudo -u "$TARGET_USER" bash "${SCRIPT_DIR}/nbstripout_setup.sh"
+        sudo -u "$TARGET_USER" bash -lc "bash ${SCRIPT_DIR}/nbstripout_setup.sh"
         echo "[postCreateCommand] nbstripout_setup.sh finished."
     else
         echo "[postCreateCommand] Warning: nbstripout_setup.sh not found at ${SCRIPT_DIR}/nbstripout_setup.sh."
