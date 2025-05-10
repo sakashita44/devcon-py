@@ -18,6 +18,17 @@ if [ -f /tmp/.host-gitconfig ]; then
     chown "$TARGET_USER:$TARGET_USER" "$TARGET_USER_HOME/.gitconfig"
     chmod 644 "$TARGET_USER_HOME/.gitconfig"
     echo ".gitconfig copied."
+
+    # Ensure Git uses the container's SSH client
+    echo "Configuring Git to use container's SSH client for user $TARGET_USER..."
+    # Check if core.sshCommand is already set and print a message
+    if sudo -u "$TARGET_USER" git config --global --get core.sshCommand > /dev/null; then
+        echo "Existing core.sshCommand found. Overwriting with /usr/bin/ssh."
+    else
+        echo "core.sshCommand not found. Setting to /usr/bin/ssh."
+    fi
+    sudo -u "$TARGET_USER" git config --global core.sshCommand "/usr/bin/ssh"
+    echo "Git core.sshCommand set to /usr/bin/ssh for user $TARGET_USER."
 else
     echo "Host .gitconfig not found at /tmp/.host-gitconfig or is not a file, skipping."
 fi
