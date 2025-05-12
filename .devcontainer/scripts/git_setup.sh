@@ -29,6 +29,11 @@ if [ -f /tmp/.host-gitconfig ]; then
     fi
     sudo -u "$TARGET_USER" git config --global core.sshCommand "/usr/bin/ssh"
     echo "Git core.sshCommand set to /usr/bin/ssh for user $TARGET_USER."
+
+    # Ensure Git uses VS Code as the editor
+    echo "Configuring Git to use VS Code as the editor for user $TARGET_USER..."
+    sudo -u "$TARGET_USER" git config --global core.editor "code --wait"
+    echo "Git core.editor set to 'code --wait' for user $TARGET_USER."
 else
     echo "Host .gitconfig not found at /tmp/.host-gitconfig or is not a file, skipping."
 fi
