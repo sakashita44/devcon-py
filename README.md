@@ -10,7 +10,7 @@
 このリポジトリは個人用の開発環境テンプレートです.
 開発者は一切の責任を負いませんので, 自己責任でご利用ください.
 
-特に, `postCreateCommand.sh` で実行される`copy_host_config.sh` スクリプトは, ホストマシンの `.gitconfig` や `.ssh` ディレクトリをコンテナにコピーします.
+特に, `postCreateCommand.sh` で実行される`git_setup.sh` スクリプトは, ホストマシンの `.gitconfig` や `.ssh` ディレクトリをコンテナにコピーします.
 この機能は各自の判断で利用してください.
 
 また, `devcontainer.json` には個人的に使用しているVS Codeの拡張機能や設定が含まれています.
@@ -49,7 +49,7 @@
     1. `.devcontainer/Dockerfile`: 追加のシステムパッケージのインストールや環境変数の設定など、Docker イメージのカスタマイズが必要な場合に編集する.
     1. `.devcontainer/scripts/`: 以下のスクリプトはコンテナ作成時に自動実行される. デフォルト設定で多くの場合機能するが、特定の要件がある場合は内容を確認し、カスタマイズする. 各スクリプトの詳細はファイル内のコメントを参照.
         * `postCreateCommand.sh`: 他のセットアップスクリプトを呼び出すメインスクリプト.
-        * `copy_host_config.sh`: ホストマシンの Git や SSH の設定をコンテナ内にコピーする.
+        * `git_setup.sh`: ホストマシンの Git や SSH の設定をコンテナ内にコピーする.
         * `dvc_setup.sh`: DVC の初期化とリモート設定を行う.
         * `nbstripout_setup.sh`: Jupyter Notebook の出力セルを Git コミット前に自動除去する `nbstripout` を設定する.
     1. `.github/`: GitHub Actions のワークフローや Issue テンプレートなどをプロジェクトに合わせて編集する.
@@ -79,7 +79,7 @@
 │   ├── dvc.json               # DVCリモートストレージ設定
 │   ├── requirements.txt       # Python パッケージリスト
 │   └── scripts/               # コンテナ初期化用スクリプト群
-│       ├── copy_host_config.sh
+│       ├── git_setup.sh
 │       ├── postCreateCommand.sh
 │       ├── dvc_setup.sh
 │       └── nbstripout_setup.sh
@@ -131,11 +131,11 @@ DVC (Data Version Control) のリモートストレージ設定を記述する J
 
 ### `.devcontainer/scripts/postCreateCommand.sh`
 
-Dev Container の初回ビルド後 (コンテナ作成後) に一度だけ実行されるメインのセットアップスクリプト. `devcontainer.json` の `postCreateCommand` から呼び出される. このスクリプト内で, `copy_host_config.sh`, `dvc_setup.sh`, `nbstripout_setup.sh` などの個別のセットアップスクリプトを呼び出す.
+Dev Container の初回ビルド後 (コンテナ作成後) に一度だけ実行されるメインのセットアップスクリプト. `devcontainer.json` の `postCreateCommand` から呼び出される. このスクリプト内で, `git_setup.sh`, `dvc_setup.sh`, `nbstripout_setup.sh` などの個別のセットアップスクリプトを呼び出す.
 
 **詳細はスクリプト内のコメントを参照.**
 
-### `.devcontainer/scripts/copy_host_config.sh`
+### `.devcontainer/scripts/git_setup.sh`
 
 ホストマシンの `.gitconfig` ファイルと `.ssh` ディレクトリの内容を, Dev Container 内のユーザーのホームディレクトリにコピーし, 適切なパーミッションを設定するスクリプト. これにより, ホストマシンの Git 設定や SSH 鍵を Dev Container 内で利用できるようにする. `postCreateCommand.sh` から呼び出される.
 
