@@ -1,3 +1,10 @@
-# Add patterns of files dvc should ignore, which could improve
-# the performance. Learn more at
-# https://dvc.org/doc/user-guide/dvcignore
+# データに関するメタデータファイル
+README.md  # 文書は Git で管理
+MEMO.md    # メモは Git で管理
+readme.txt  # 説明書は Git で管理
+memo.txt    # メモは Git で管理
+
+# 一時ファイル
+*.bak      # バックアップファイル除外
+*.tmp      # 一時ファイル除外
+*.log      # ログファイル除外
