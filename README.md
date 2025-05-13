@@ -25,6 +25,8 @@
 * VS Code がインストールされていること
     * Dev Container 拡張機能がインストールされていること
 * Docker がインストールされていること
+* `.devcontainer/scripts/` 内のコマンドがLF改行であること
+    * Windows の場合、Git Bash や WSL などの環境で LF 改行に変換してから実行することを推奨
 
 ### 手順
 

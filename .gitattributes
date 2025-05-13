@@ -1,4 +1,45 @@
+# Jupyter Notebooks や類似ファイル
 *.ipynb filter=nbstripout diff=ipynb
 *.zpln filter=nbstripout
 
+# テキストファイルの改行コードを LF に統一
+# シェルスクリプト
+*.sh text eol=lf
+
+# Python スクリプト
+*.py text eol=lf
+
+# Markdown ドキュメント
+*.md text eol=lf
+
+# プレーンテキストファイル
+*.txt text eol=lf
+
+# 設定ファイル
+*.json text eol=lf
+*.yaml text eol=lf
+*.yml text eol=lf
+*.ini text eol=lf
+*.toml text eol=lf
+
+# データファイル（テキスト形式の場合）
+*.csv text eol=lf
+*.tsv text eol=lf
+
+# プロジェクトで使う他の一般的なテキストファイル拡張子を追加
+# 例: *.html, *.css, *.js, *.java, *.c, *.cpp など
+
+# 上記で明示的に指定されていないファイルは Git の自動判定に任せる
+# これは最後のルールにする
+
 * text=auto
+
+# "*.s" についての注意:
+# 元のファイルにあった "*.s" は少し曖昧
+# アセンブリ言語ソースファイル（テキスト）の場合は以下を推奨:
+# *.s text eol=lf
+# もし他のバイナリ形式なら、Git にバイナリとして扱わせる必要がある
+# 例: *.s binary
+# または text=auto で自動判定に任せる
+# 今はメインの推奨からコメントアウト
+# プロジェクトで ".s" ファイルが何かに応じて調整
