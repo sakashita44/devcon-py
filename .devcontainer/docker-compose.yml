@@ -6,7 +6,7 @@ services:
     env_file:
       - .env
     volumes:
-      - "${DVC_REMOTE}:/dvc_remote"
+      # - "${DVC_REMOTE}:/dvc_remote"
       - "${HOME:-$USERPROFILE}/.gitconfig:/tmp/.host-gitconfig:ro"
       - "${HOME:-$USERPROFILE}/.ssh:/tmp/.host-ssh:ro"
       - "..:/workspace:cached"
