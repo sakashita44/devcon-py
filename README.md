@@ -25,6 +25,7 @@
 * VS Code がインストールされていること
     * Dev Container 拡張機能がインストールされていること
 * Docker がインストールされていること
+    * Docker Compose がインストールされていること
 * `.devcontainer/scripts/` 内のコマンドがLF改行であること
     * Windows の場合、Git Bash や WSL などの環境で LF 改行に変換してから実行することを推奨
 
@@ -37,9 +38,14 @@
 1. **必須の設定変更**
     1. `.devcontainer/devcontainer.json` を開く.
         * `name` プロパティをあなたのプロジェクト名に変更する (例: `"My Analysis Project"`) .
-    1. `.devcontainer/dvc.json` を開く (DVC を使用する場合).
-        * `remote.url` をあなたの DVC リモートストレージの URL に変更する (例: `s3://my-bucket/my-project-dvc`, `/path/to/local/remote`).
-        * 必要に応じて `remote.name` も変更する.
+    1. `.devcontainer/.env` を開く.
+        * `DVC_REMOTE` の値をあなたの DVC リモートストレージのパスに変更する.
+        * 必要に応じて他の環境変数も追加する.
+    1. `.devcontainer/docker-compose.yml` を開く.
+        * 必要に応じてボリュームマウントや環境設定を調整する.
+        * DVC リモートを使用する場合は、コメントアウトを解除する.
+    1. `.devcontainer/dvc.json` を開く.
+        * `remote.name` と `remote.url` を自分の環境に合わせて変更する.
     1. `.devcontainer/requirements.txt` を開く.
         * プロジェクトに必要な Python パッケージをリストに追加または編集する.
 
@@ -76,8 +82,9 @@
 ./
 ├── .devcontainer/
 │   ├── devcontainer.json      # Dev Container 設定 (コンテナ名, 拡張機能, etc.)
-│   ├── .env                   # 環境変数設定
+│   ├── .env                   # 環境変数設定 (DVC_REMOTEなど)
 │   ├── Dockerfile             # Docker イメージ定義
+│   ├── docker-compose.yml     # Docker Compose 設定
 │   ├── dvc.json               # DVCリモートストレージ設定
 │   ├── requirements.txt       # Python パッケージリスト
 │   └── scripts/               # コンテナ初期化用スクリプト群
@@ -103,15 +110,25 @@
 
 ### `.devcontainer/devcontainer.json`
 
-Dev Container の主要な設定ファイル. コンテナ名, 使用する Dockerfile, VS Code 拡張機能, VS Code の設定, コンテナ起動後のコマンドなどを定義する.
+Dev Container の主要な設定ファイル. コンテナ名, Docker Compose ファイルの指定, VS Code 拡張機能, VS Code の設定, コンテナ起動後のコマンドなどを定義する.
 
 **利用開始時に `name` 他, 必要な部分を編集すること.**
 
+### `.devcontainer/docker-compose.yml`
+
+Docker Compose による複数コンテナの設定ファイル. メインのDevコンテナの設定や、ボリュームマウント、環境変数の指定などを行う。必要に応じてDVCリモートストレージのマウントなどを設定できる.
+
+**必要に応じてボリュームマウントや環境設定を調整する.**
+
 ### `.devcontainer/.env`
 
-Dev Container 内で使用する環境変数を定義するファイル. `.env` ファイルに記述された環境変数は, Dev Container 内で自動的に読み込まれる. 初期状態では空のファイル. git追跡対象外.
+Docker Compose や Dev Container で使用する環境変数を定義するファイル。このファイルには2種類の環境変数が含まれる (今後要修正)
 
-**必要に応じて環境変数を追加すること.**
+1. **ホスト側ビルド時の環境変数**: Docker Compose の実行時に使用される環境変数として機能する。例えば、`${DVC_REMOTE}:/dvc_remote` のようなボリュームマウントの変数展開に使用される。
+
+1. **コンテナ内の環境変数**: docker-compose.yml の `env_file: - .env` 指定により、ファイルに定義された全ての環境変数がコンテナ内にも渡される。コンテナ内のアプリケーションやスクリプトからこれらの環境変数を参照できる。
+
+**必要に応じて環境変数を追加・編集すること.**
 
 ### `.devcontainer/Dockerfile`
 
@@ -121,13 +138,13 @@ Dev Container で使用する Docker イメージをビルドするための指�
 
 ### `.devcontainer/dvc.json`
 
-DVC (Data Version Control) のリモートストレージ設定を記述する JSON ファイル. `dvc_setup.sh` スクリプトがこのファイルを読み込み, DVC のリモート設定を行う.
+DVC (Data Version Control) のリモートストレージ設定を記述する JSON ファイル. `remote.name` にはリモートの名前、`remote.url` にはリモートストレージのパスまたはURLを指定する. `dvc_setup.sh` スクリプトがこのファイルを読み込み, DVC のリモート設定を行う.
 
-**DVC を利用する場合は `remote.url` を自身の環境に合わせて編集すること.**
+**DVC を利用する場合は `remote.name` と `remote.url` を自分の環境に合わせて編集すること.**
 
 ### `.devcontainer/requirements.txt`
 
-プロジェクトで使用する Python パッケージのリスト. `pip install -r requirements.txt` コマンドでインストールされる.
+プロジェクトで使用する Python パッケージのリスト. コンテナビルド時に `pip install -r requirements.txt` コマンドでインストールされる.
 
 **プロジェクトに必要なパッケージをここに記述する.**
 
