@@ -61,10 +61,10 @@ RUN echo '\n# Enable bash-completion\nif [ -f /usr/share/bash-completion/bash_co
 
 # Python関連パッケージのインストール
 ### 要件に応じて.devcontainer/requirements.txtを変更
-COPY --chown=$USERNAME:$USERNAME requirements.txt /tmp/requirements.txt
+COPY --chown=$USERNAME:$USERNAME .devcontainer/requirements.txt /tmp/requirements.txt
 RUN pip install --no-cache-dir --upgrade pip setuptools wheel \
     && pip install --no-cache-dir -r /tmp/requirements.txt \
     && rm /tmp/requirements.txt
 
 # コンテナ起動時のコマンド設定
-CMD ["/bin/bash"]
+CMD ["tail", "-f", "/dev/null"]
