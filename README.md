@@ -1,4 +1,4 @@
-# my-py-container
+# devcon-py
 
 個人用のPython-JupyterNotebook開発環境 (VS Code & Dev Container 前提) のテンプレート
 
