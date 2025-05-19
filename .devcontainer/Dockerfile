@@ -10,7 +10,8 @@ ENV LANG=ja_JP.UTF-8 \
     PYTHONDONTWRITEBYTECODE=1 \
     PYTHONFAULTHANDLER=1 \
     PIP_NO_CACHE_DIR=1 \
-    PIP_DISABLE_PIP_VERSION_CHECK=1
+    PIP_DISABLE_PIP_VERSION_CHECK=1 \
+    PIP_USER=false
 
 # rootではなく、非rootユーザーで実行するための設定
 # ユーザーの作成
@@ -50,6 +51,13 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
+# Python関連パッケージのインストール
+### 要件に応じて.devcontainer/requirements.txtを変更
+COPY --chown=$USERNAME:$USERNAME .devcontainer/requirements.txt /tmp/requirements.txt
+RUN pip install --no-cache-dir --upgrade pip setuptools wheel \
+    && pip install --no-cache-dir -r /tmp/requirements.txt \
+    && rm /tmp/requirements.txt
+
 # ユーザーの切り替え
 USER $USERNAME
 
@@ -58,13 +66,6 @@ WORKDIR /workspace
 
 # bash-completionの設定
 RUN echo '\n# Enable bash-completion\nif [ -f /usr/share/bash-completion/bash_completion ]; then\n  . /usr/share/bash-completion/bash_completion\nelif [ -f /etc/bash_completion ]; then\n  . /etc/bash_completion\nfi' >> /home/$USERNAME/.bashrc
-
-# Python関連パッケージのインストール
-### 要件に応じて.devcontainer/requirements.txtを変更
-COPY --chown=$USERNAME:$USERNAME .devcontainer/requirements.txt /tmp/requirements.txt
-RUN pip install --no-cache-dir --upgrade pip setuptools wheel \
-    && pip install --no-cache-dir -r /tmp/requirements.txt \
-    && rm /tmp/requirements.txt
 
 # コンテナ起動時のコマンド設定
 CMD ["tail", "-f", "/dev/null"]
